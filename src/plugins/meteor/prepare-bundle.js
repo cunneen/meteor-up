@@ -8,7 +8,7 @@ import {
 import fs from 'fs';
 
 export function prepareBundleSupported(dockerConfig) {
-  const supportedImages = ['abernix/meteord', 'zodern/meteor'];
+  const supportedImages = ['abernix/meteord', 'zodern/meteor', 'cunneen/meteor'];
 
   if ('prepareBundle' in dockerConfig) {
     return dockerConfig.prepareBundle;

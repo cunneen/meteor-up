@@ -39,6 +39,9 @@ mkdir bundle
 <% } %>
 
 cd bundle
+<% if (usingNodeHeaders === 'true') { %>
+  cp $APP_DIR/tmp/node-headers.tar.gz .
+<% } %>
 
 echo "Creating Dockerfile"
 sudo cat <<"EOT" > Dockerfile
@@ -57,6 +60,13 @@ RUN --mount=type=bind,target=/tmp/__mup-bundle tar -xzf /tmp/__mup-bundle/bundle
 <% } else { %>
 COPY ./ /built_app
 <% } %>
+
+<% if (usingNodeHeaders === 'true') { %>
+COPY ./node-headers.tar.gz /
+RUN echo "setting npm_config_tarball to /node-headers.tar.gz"
+ENV npm_config_tarball="/node-headers.tar.gz"
+<% } %>
+
 RUN cd /built_app/programs/server && \
     npm install --unsafe-perm
 EOT

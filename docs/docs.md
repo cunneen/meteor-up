@@ -795,7 +795,7 @@ module.exports = {
       env: {
         DEFAULT_HOST: 'foo.bar.com'
       },
-      // env for the jrcs/letsencrypt-nginx-proxy-companion container
+      // env for the nginxproxy/acme-companion container
       envLetsEncrypt: {
         // Directory URI for the CA ACME API endpoint
         // (default: https://acme-v01.api.letsencrypt.org/directory).

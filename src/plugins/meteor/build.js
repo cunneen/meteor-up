@@ -54,13 +54,19 @@ function createBuildArgs(buildOptions, appPath) {
   const args = [
     'build',
     '--directory',
-    buildOptions.buildLocation,
-    '--architecture',
-    'os.linux.x86_64'
+    buildOptions.buildLocation
   ];
 
   if (buildOptions.debug) {
     args.push('--debug');
+  }
+
+  if (buildOptions.aarch64) {
+    args.push('--architecture');
+    args.push('os.linux.aarch64');
+  } else {
+    args.push('--architecture');
+    args.push('os.linux.x86_64');
   }
 
   if (buildOptions.mobileSettings) {

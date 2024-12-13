@@ -54,6 +54,19 @@ function executeScript(session, _options, callback, varsMapper) {
   );
 }
 
+function execute(session, _options, callback, varsMapper) {
+  const options = clone(_options);
+  if (typeof options.hostVars === 'object' && options.hostVars[session._host]) {
+    options.vars = merge(options.vars, options.hostVars[session._host]);
+  }
+
+  session.execute(
+    options.command,
+    options,
+    createCallback(callback, varsMapper)
+  );
+}
+
 function createCallback(cb, varsMapper) {
   return function(err, code, logs = {}) {
     logs.stderr = logs.stderr || '';
@@ -84,6 +97,7 @@ function createCallback(cb, varsMapper) {
 
 nodemiral.registerTask('copy', copy);
 nodemiral.registerTask('executeScript', executeScript);
+nodemiral.registerTask('execute', execute);
 
 const oldApplyTemplate = nodemiral.session.prototype._applyTemplate;
 // Adds support for using include with ejs

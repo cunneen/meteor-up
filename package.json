@@ -1,6 +1,6 @@
 {
-  "name": "mup",
-  "version": "1.5.11",
+  "name": "@cunneen/mup",
+  "version": "1.7.0-alpha.1",
   "description": "Production Quality Meteor Deployments",
   "main": "lib/index.js",
   "repository": {

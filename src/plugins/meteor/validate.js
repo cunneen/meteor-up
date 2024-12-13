@@ -44,7 +44,9 @@ const schema = joi.object().keys({
     server: joi.string().uri(),
     allowIncompatibleUpdates: joi.boolean(),
     executable: joi.string(),
-    cleanBuildLocation: joi.bool()
+    cleanBuildLocation: joi.bool(),
+    aarch64: joi.bool(),
+    nodeHeaders: joi.string()
   }),
   env: joi
     .object()

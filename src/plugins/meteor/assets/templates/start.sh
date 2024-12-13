@@ -7,8 +7,8 @@ BUNDLE_PATH=$APP_PATH/current
 ENV_FILE=$APP_PATH/config/env.list
 PORT=<%= port %>
 BIND=<%= bind %>
-NGINX_PROXY_VERSION="v1.1.0"
-LETS_ENCRYPT_VERSION="v1.13.1"
+NGINX_PROXY_VERSION="1.6"
+LETS_ENCRYPT_VERSION="2.5"
 APP_IMAGE=<%- imagePrefix %><%= appName.toLowerCase() %>
 IMAGE=$APP_IMAGE:latest
 VOLUME="--volume=$BUNDLE_PATH:/bundle"
@@ -115,7 +115,7 @@ fi
    <% if(typeof sslConfig.autogenerate === "object")  { %>
     echo "Running autogenerate"
     # Get the nginx template for nginx-gen
-    wget https://raw.githubusercontent.com/jwilder/nginx-proxy/master/nginx.tmpl -O /opt/$APPNAME/config/nginx.tmpl
+    wget https://raw.githubusercontent.com/nginx-proxy/nginx-proxy/master/nginx.tmpl -O /opt/$APPNAME/config/nginx.tmpl
 
     # Update nginx config based on user input or default passed by js
 sudo cat <<EOT > /opt/$APPNAME/config/nginx-default.conf
@@ -124,11 +124,12 @@ EOT
 
     # We don't need to fail the deployment because of a docker hub downtime
     set +e
-    sudo docker pull jrcs/letsencrypt-nginx-proxy-companion:$LETS_ENCRYPT_VERSION
-    sudo docker pull zodern/nginx-proxy:$NGINX_PROXY_VERSION
+    sudo docker pull nginxproxy/acme-companion:$LETS_ENCRYPT_VERSION
+    sudo docker pull nginxproxy/nginx-proxy:$NGINX_PROXY_VERSION
     set -e
 
     echo "Pulled autogenerate images"
+    sudo chown -R ${USER}:1000 /opt/$APPNAME 
     sudo docker run -d -p 80:80 -p 443:443 \
       --name $APPNAME-nginx-proxy \
       --restart=always \
@@ -138,7 +139,7 @@ EOT
       -v /opt/$APPNAME/config/vhost.d:/etc/nginx/vhost.d \
       -v /opt/$APPNAME/config/html:/usr/share/nginx/html \
       -v /var/run/docker.sock:/tmp/docker.sock:ro \
-      zodern/nginx-proxy:$NGINX_PROXY_VERSION
+      nginxproxy/nginx-proxy:$NGINX_PROXY_VERSION
       echo "Ran nginx-proxy"
     sleep 15s
 
@@ -148,8 +149,8 @@ EOT
       --volumes-from $APPNAME-nginx-proxy \
       -v /opt/$APPNAME/certs:/etc/nginx/certs:rw \
       -v /var/run/docker.sock:/var/run/docker.sock:ro \
-      jrcs/letsencrypt-nginx-proxy-companion:$LETS_ENCRYPT_VERSION
-    echo "Ran jrcs/letsencrypt-nginx-proxy-companion"
+      nginxproxy/acme-companion:$LETS_ENCRYPT_VERSION
+    echo "Ran nginxproxy/acme-companion"
     <% } else { %>
     # We don't need to fail the deployment because of a docker hub downtime
     set +e

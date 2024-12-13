@@ -11,3 +11,4 @@ tests/**/package-lock.json
 tests/ssh/
 .nyc_output/
 tests/validate-tmp
+/.history

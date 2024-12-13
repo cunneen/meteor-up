@@ -141,7 +141,7 @@ export function setup(api) {
         proxyName: PROXY_CONTAINER_NAME,
         domains
       }
-    });
+    }); 
   }
 
   const hostnames = getLoadBalancingHosts(
@@ -160,6 +160,10 @@ export function setup(api) {
       port: appConfig.env.PORT,
       hostnames
     }
+  });
+
+  list.execute(`Ensuring permissions for /opt/${appName}`, {
+    command: `echo \${USER} && sudo chown -R \${USER}:1000 /opt/${appName}`
   });
 
   return api.runTaskList(list, sessions, {
@@ -239,6 +243,9 @@ export function reconfigShared(api) {
     });
   }
 
+  list.execute(`Ensuring permissions for /opt/${PROXY_CONTAINER_NAME}`, {
+    command: `echo \${USER} && sudo chown -R \${USER}:1000 /opt/${PROXY_CONTAINER_NAME}`
+  });
 
   const sessions = getSessions(api);
 

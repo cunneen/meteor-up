@@ -93,6 +93,9 @@ export function setup(api) {
 
     });
   }
+  list.execute(`Ensuring permissions for /opt/${config.name}`, {
+    command: `echo \${USER} && sudo chown -R \${USER}:1000 /opt/${config.name}`
+  });
 
   const sessions = api.getSessions(['app']);
 
@@ -145,6 +148,7 @@ export async function prepareBundle(api) {
   if (appConfig.docker.prepareBundleLocally) {
     return prepareBundleLocally(buildOptions.buildLocation, bundlePath, api);
   }
+  const usingNodeHeaders = buildOptions.nodeHeaders ? 'true' : 'false';
 
   const list = nodemiral.taskList('Prepare App Bundle');
 
@@ -172,7 +176,8 @@ export async function prepareBundle(api) {
       useBuildKit: appConfig.docker.useBuildKit,
       tag,
       privateRegistry: privateDockerRegistry,
-      imagePrefix: getImagePrefix(privateDockerRegistry)
+      imagePrefix: getImagePrefix(privateDockerRegistry),
+      usingNodeHeaders
     }
   });
 
@@ -224,6 +229,14 @@ export async function push(api) {
     progressBar: appConfig.enableUploadProgressBar
   });
 
+  if (buildOptions.nodeHeaders) {
+    list.copy('Pushing Node Headers to the Server', {
+      src: buildOptions.nodeHeaders,
+      dest: `/opt/${appConfig.name}/tmp/node-headers.tar.gz`,
+      progressBar: appConfig.enableUploadProgressBar
+    });
+  }
+
   let sessions = api.getSessions(['app']);
 
   // If we are using a private registry,
@@ -232,6 +245,10 @@ export async function push(api) {
   if (privateDockerRegistry) {
     sessions = sessions.slice(0, 1);
   }
+
+  list.execute(`Ensuring permissions for /opt/${appConfig.name}`, {
+    command: `echo \${USER} && sudo chown -R \${USER}:1000 /opt/${appConfig.name}`
+  });
 
   await api.runTaskList(list, sessions, {
     series: true,
@@ -356,6 +373,10 @@ export function envconfig(api) {
       env: env || {},
       appName: app.name
     }
+  });
+
+  list.execute(`Ensuring permissions for /opt/${app.name}`, {
+    command: `echo \${USER} && sudo chown -R \${USER}:1000 /opt/${app.name}`
   });
 
   const sessions = api.getSessions(['app']);

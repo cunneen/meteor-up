@@ -16,6 +16,7 @@ sudo touch /opt/<%= name %>/config/env_letsencrypt.list
 # Custom Certificates expect the app's folder to already exist
 sudo mkdir -p /opt/<%= appName %>/config
 
+echo "proxy-setup.sh : changing owner of /opt/<%= name %> and /opt/<%= appName %> to ${USER}"
 sudo chown ${USER} /opt/<%= name %> -R
 sudo chown ${USER} /opt/<%= appName %> -R
 

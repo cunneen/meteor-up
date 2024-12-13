@@ -28,6 +28,10 @@ else
   # setup the new version
   sudo mkdir current
   sudo cp tmp/bundle.tar.gz current/
+  sudo chown -R $LOGNAME current
+  if [ -f tmp/node-headers.tar.gz ]; then
+    sudo cp tmp/node-headers.tar.gz current/
+  fi
 
   sudo docker rmi $IMAGE:previous || true
 fi
