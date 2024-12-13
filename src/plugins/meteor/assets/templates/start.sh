@@ -148,6 +148,7 @@ EOT
       --restart=always\
       --volumes-from $APPNAME-nginx-proxy \
       -v /opt/$APPNAME/certs:/etc/nginx/certs:rw \
+      -v /opt/$APPNAME/acme.sh:/etc/acme.sh \
       -v /var/run/docker.sock:/var/run/docker.sock:ro \
       nginxproxy/acme-companion:$LETS_ENCRYPT_VERSION
     echo "Ran nginxproxy/acme-companion"

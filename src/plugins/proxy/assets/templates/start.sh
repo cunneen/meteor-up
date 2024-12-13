@@ -78,6 +78,7 @@ sudo docker run \
   --log-opt max-size=100m \
   --log-opt max-file=3 \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
+  -v /opt/$APPNAME/acme.sh:/etc/acme.sh \
   nginxproxy/acme-companion:$LETSENCRYPT_COMPANION_VERSION
 echo "Ran nginxproxy/acme-companion"
 
