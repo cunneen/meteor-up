@@ -2,8 +2,8 @@
 
 APPNAME=<%= appName %>
 APP_PATH=/opt/$APPNAME
-NGINX_PROXY_VERSION="1.6"
-LETSENCRYPT_COMPANION_VERSION="2.5"
+NGINX_PROXY_VERSION="1.10-alpine"
+LETSENCRYPT_COMPANION_VERSION="2.6"
 
 # Shared settings
 source $APP_PATH/config/shared-config.sh
